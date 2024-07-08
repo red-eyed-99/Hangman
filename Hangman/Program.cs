@@ -9,7 +9,7 @@
 
             while (true)
             {
-                Console.WriteLine("1 Начать новую игру. 2 Выход");
+                Console.WriteLine("1. Start new game 2. Exit");
 
                 switch(Console.ReadLine())
                 {
@@ -21,7 +21,7 @@
                         Environment.Exit(0);
                         break;
                     default:
-                        Console.WriteLine("Введите \"1\", чтобы начать новую игру или \"2\" для выхода");
+                        Console.WriteLine("Enter \"1\" to start new game or \"2\" exit");
                         break;
                 }
             }
