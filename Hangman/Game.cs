@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Hangman
 {
@@ -6,16 +7,17 @@ namespace Hangman
     {
         public int ErrorCount { get; private set; }
 
-        public string Word { get; private set; } 
+        public string Word { get; private set; }
 
-        public string HiddenWord { get; private set; }   
+        public string HiddenWord { get; private set; }
 
-        public Game() 
+        private List<char> enteredLetters = new List<char>();
+
+        public Game()
         {
             var wordPicker = new WordPicker();
-            
             Word = wordPicker.GetRandomWord();
-            
+
             HiddenWord = new string('_', Word.Length);
         }
 
@@ -24,7 +26,6 @@ namespace Hangman
             Console.Clear();
 
             var drawer = new HangmanDrawer();
-
             while (true)
             {
                 Console.Clear();
@@ -37,7 +38,7 @@ namespace Hangman
                 }
 
                 var enteredLetter = GetLetterFromUserInput();
-
+                enteredLetters.Add(enteredLetter);
                 if (Word.Contains(enteredLetter))
                 {
                     for (int i = 0; i < Word.Length; i++)
@@ -53,7 +54,7 @@ namespace Hangman
                 else
                 {
                     ErrorCount++;
-                } 
+                }
             }
         }
 
@@ -64,11 +65,30 @@ namespace Hangman
                 Console.WriteLine("Enter a letter: ");
 
                 var userInput = Console.ReadLine();
-                if (userInput != null && userInput.Length == 1 && Char.IsLetter(Convert.ToChar(userInput)))
+                if (ValidateUserInput(userInput))
                 {
                     return Char.ToLower(Convert.ToChar(userInput));
                 }
             }
+        }
+
+        private bool ValidateUserInput(string? userInput)
+        {
+            if (userInput != null && Regex.Match(userInput, @"^[а-яёА-ЯЁ]$").Success)
+            {
+                if (enteredLetters.Contains(Convert.ToChar(userInput)))
+                {
+                    Console.WriteLine("You have already entered this letter!");
+                    return false;
+                }
+
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("You can only enter one character in (а-яёА-ЯЁ)!");
+                return false;
+            } 
         }
     }
 }
