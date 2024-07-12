@@ -2,7 +2,7 @@
 {
     public class WordPicker
     {
-        private List<string> _words = new List<string>();
+        private List<string> Words { get; set; } = new List<string>();
 
         private Random _random = new Random();
 
@@ -22,12 +22,12 @@
                     var word = reader.ReadLine();
                     if (!string.IsNullOrEmpty(word))
                     {
-                        _words.Add(word);
+                        Words.Add(word);
                     }
                 }
             }
 
-            if (_words.Count < 1)
+            if (Words.Count < 1)
             {
                 throw new Exception("File \"words.txt\" does not contain any word to pick!");
             }
@@ -35,8 +35,8 @@
 
         public string GetRandomWord()
         {
-            var randomWordIndex = _random.Next(_words.Count);
-            return _words[randomWordIndex];
+            var randomWordIndex = _random.Next(Words.Count);
+            return Words[randomWordIndex];
         }
     }
 }

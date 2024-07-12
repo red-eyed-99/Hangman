@@ -11,9 +11,9 @@ namespace Hangman
 
         public string HiddenWord { get; private set; }
 
-        private List<char> _enteredLetters = new List<char>();
+        public List<char> EnteredLetters { get; private set; } = new List<char>();
 
-        private List<char> _wrongLetters = new List<char>();
+        public List<char> WrongLetters { get; private set; } = new List<char>();
 
         public Game()
         {
@@ -28,12 +28,12 @@ namespace Hangman
             Console.Clear();
 
             var drawer = new ConsoleDrawer();
-            drawer.DrawGallow(OutputPositions.gallow);
+            drawer.DrawGallow(ConsoleOutputPositions.Gallow);
 
             while (true)
             {
-                OutputWrongAnswersInfo(OutputPositions.wrongAnswersBlock);
-                OutputHiddenWordState(OutputPositions.hiddenWord);
+                OutputWrongAnswersInfo(ConsoleOutputPositions.WrongAnswersBlock);
+                OutputHiddenWordState(ConsoleOutputPositions.HiddenWord);
 
                 if (CheckGameState() != GameStatus.IsRunning)
                 {
@@ -41,7 +41,7 @@ namespace Hangman
                 }
 
                 var enteredLetter = GetLetterFromUserInput();
-                _enteredLetters.Add(enteredLetter);
+                EnteredLetters.Add(enteredLetter);
 
                 var cursorPositionAfterInput = Console.GetCursorPosition();
 
@@ -52,11 +52,11 @@ namespace Hangman
                 else
                 {
                     ErrorCount++;
-                    _wrongLetters.Add(enteredLetter);
-                    drawer.DrawHangedMan(ErrorCount, OutputPositions.hangedMan);
+                    WrongLetters.Add(enteredLetter);
+                    drawer.DrawHangedMan(ErrorCount, ConsoleOutputPositions.HangedMan);
                 }
 
-                ClearConsoleAfterUserInput(OutputPositions.userInteractionBlock, cursorPositionAfterInput);
+                ClearConsoleAfterUserInput(ConsoleOutputPositions.UserInteractionBlock, cursorPositionAfterInput);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Hangman
         {
             if (ErrorCount == 6)
             {
-                Console.SetCursorPosition(OutputPositions.userInteractionBlock.X, OutputPositions.userInteractionBlock.Y);
+                Console.SetCursorPosition(ConsoleOutputPositions.UserInteractionBlock.X, ConsoleOutputPositions.UserInteractionBlock.Y);
                 Console.WriteLine("You hanged!");
                 Console.WriteLine($"The word was: {Word}\n");
 
@@ -72,7 +72,7 @@ namespace Hangman
             }
             else if (HiddenWord == Word)
             {
-                Console.SetCursorPosition(OutputPositions.gallow.X, OutputPositions.gallow.Y);
+                Console.SetCursorPosition(ConsoleOutputPositions.Gallow.X, ConsoleOutputPositions.Gallow.Y);
                 Console.WriteLine(@"
 ------------
 |/         |
@@ -83,7 +83,7 @@ namespace Hangman
 |         / \
 -------");
 
-                Console.SetCursorPosition(OutputPositions.userInteractionBlock.X, OutputPositions.userInteractionBlock.Y);
+                Console.SetCursorPosition(ConsoleOutputPositions.UserInteractionBlock.X, ConsoleOutputPositions.UserInteractionBlock.Y);
                 Console.WriteLine("You win!\n");
 
                 return GameStatus.Win;
@@ -96,7 +96,7 @@ namespace Hangman
         {
             Console.SetCursorPosition(position.X, position.Y);
             Console.WriteLine($"Error count: {ErrorCount}");
-            Console.WriteLine($"Wrong letters: {string.Join(", ", _wrongLetters)}");
+            Console.WriteLine($"Wrong letters: {string.Join(", ", WrongLetters)}");
         }
 
         private void OutputHiddenWordState((int X, int Y) position)
@@ -130,7 +130,7 @@ namespace Hangman
         {
             if (userInput != null && Regex.Match(userInput, @"^[а-яёА-ЯЁ]$").Success)
             {
-                if (_enteredLetters.Contains(Convert.ToChar(userInput)))
+                if (EnteredLetters.Contains(Convert.ToChar(userInput)))
                 {
                     Console.WriteLine("You have already entered this letter!");
                     return false;
