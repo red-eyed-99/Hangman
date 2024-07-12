@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("H_A_N_G_M_A_N");
+            Console.WriteLine("Welcome to H_A_N_G_M_A_N");
             Console.WriteLine();
             Console.WriteLine("1. Start new game 2. Exit");
 

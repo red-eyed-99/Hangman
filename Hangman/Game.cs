@@ -11,7 +11,9 @@ namespace Hangman
 
         public string HiddenWord { get; private set; }
 
-        private List<char> enteredLetters = new List<char>();
+        private List<char> _enteredLetters = new List<char>();
+
+        private List<char> _wrongLetters = new List<char>();
 
         public Game()
         {
@@ -25,37 +27,89 @@ namespace Hangman
         {
             Console.Clear();
 
-            var drawer = new HangmanDrawer();
+            var drawer = new ConsoleDrawer();
+            drawer.DrawGallow(OutputPositions.gallow);
+
             while (true)
             {
-                Console.Clear();
+                OutputWrongAnswersInfo(OutputPositions.wrongAnswersBlock);
+                OutputHiddenWordState(OutputPositions.hiddenWord);
 
-                drawer.Draw(this);
-
-                if (ErrorCount == 6 || HiddenWord == Word)
+                if (CheckGameState() != GameStatus.IsRunning)
                 {
                     break;
                 }
 
                 var enteredLetter = GetLetterFromUserInput();
-                enteredLetters.Add(enteredLetter);
+                _enteredLetters.Add(enteredLetter);
+
+                var cursorPositionAfterInput = Console.GetCursorPosition();
+
                 if (Word.Contains(enteredLetter))
                 {
-                    for (int i = 0; i < Word.Length; i++)
-                    {
-                        if (Word[i] == enteredLetter)
-                        {
-                            var hiddenWord = new StringBuilder(HiddenWord);
-                            hiddenWord[i] = Word[i];
-                            HiddenWord = hiddenWord.ToString();
-                        }
-                    }
+                    ShowLetterInHiddenWord(enteredLetter);
                 }
                 else
                 {
                     ErrorCount++;
+                    _wrongLetters.Add(enteredLetter);
+                    drawer.DrawHangedMan(ErrorCount, OutputPositions.hangedMan);
                 }
+
+                ClearConsoleAfterUserInput(OutputPositions.userInteractionBlock, cursorPositionAfterInput);
             }
+        }
+
+        private GameStatus CheckGameState()
+        {
+            if (ErrorCount == 6)
+            {
+                Console.SetCursorPosition(OutputPositions.userInteractionBlock.X, OutputPositions.userInteractionBlock.Y);
+                Console.WriteLine("You hanged!");
+                Console.WriteLine($"The word was: {Word}\n");
+
+                return GameStatus.Hanged;
+            }
+            else if (HiddenWord == Word)
+            {
+                Console.SetCursorPosition(OutputPositions.gallow.X, OutputPositions.gallow.Y);
+                Console.WriteLine(@"
+------------
+|/         |
+|
+|
+|         \o/
+|          O
+|         / \
+-------");
+
+                Console.SetCursorPosition(OutputPositions.userInteractionBlock.X, OutputPositions.userInteractionBlock.Y);
+                Console.WriteLine("You win!\n");
+
+                return GameStatus.Win;
+            }
+
+            return GameStatus.IsRunning;
+        }
+
+        private void OutputWrongAnswersInfo((int X, int Y) position)
+        {
+            Console.SetCursorPosition(position.X, position.Y);
+            Console.WriteLine($"Error count: {ErrorCount}");
+            Console.WriteLine($"Wrong letters: {string.Join(", ", _wrongLetters)}");
+        }
+
+        private void OutputHiddenWordState((int X, int Y) position)
+        {
+            Console.SetCursorPosition(position.X, position.Y);
+
+            var hiddenWordSymbols = HiddenWord.ToCharArray();
+            foreach (var symbol in hiddenWordSymbols)
+            {
+                Console.Write(symbol.ToString() + ' ');
+            }
+
+            Console.WriteLine('\n');
         }
 
         private char GetLetterFromUserInput()
@@ -76,7 +130,7 @@ namespace Hangman
         {
             if (userInput != null && Regex.Match(userInput, @"^[а-яёА-ЯЁ]$").Success)
             {
-                if (enteredLetters.Contains(Convert.ToChar(userInput)))
+                if (_enteredLetters.Contains(Convert.ToChar(userInput)))
                 {
                     Console.WriteLine("You have already entered this letter!");
                     return false;
@@ -88,7 +142,31 @@ namespace Hangman
             {
                 Console.WriteLine("You can only enter one character in (а-яёА-ЯЁ)!");
                 return false;
-            } 
+            }
+        }
+
+        private void ShowLetterInHiddenWord(char enteredLetter)
+        {
+            for (int i = 0; i < Word.Length; i++)
+            {
+                if (Word[i] == enteredLetter)
+                {
+                    var hiddenWord = new StringBuilder(HiddenWord);
+                    hiddenWord[i] = Word[i];
+                    HiddenWord = hiddenWord.ToString();
+                }
+            }
+        }
+
+        private void ClearConsoleAfterUserInput((int X, int Y) userInteractionBlockPosition, (int X, int Y) cursorPositionAfterInput)
+        {
+            for (int i = cursorPositionAfterInput.Y - 1; i >= userInteractionBlockPosition.Y; i--)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.Write(new string(' ', Console.BufferWidth));
+            }
+
+            Console.SetCursorPosition(userInteractionBlockPosition.X, userInteractionBlockPosition.Y);
         }
     }
 }
