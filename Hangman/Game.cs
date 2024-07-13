@@ -130,7 +130,7 @@ namespace Hangman
 
         private bool ValidateUserInput(string? userInput)
         {
-            if (userInput != null && Regex.Match(userInput, @"^[а-яёА-ЯЁ]$").Success)
+            if (userInput != null && Regex.Match(userInput, @"^[а-яА-Я]$").Success)
             {
                 if (EnteredLetters.Contains(Convert.ToChar(userInput)))
                 {
