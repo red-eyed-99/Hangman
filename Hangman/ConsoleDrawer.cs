@@ -6,14 +6,14 @@
         {
             Console.SetCursorPosition(position.X, position.Y);
             Console.WriteLine(@"
-------------
+____________
 |/         |
 |
 |
 |
 |
 |
--------");          
+--------");          
         }
 
         public void DrawHangedMan(int errorCount, (int X, int Y) position)
@@ -46,6 +46,26 @@
                     break;
                 default:
                     break;
+            }
+        }
+
+        public void DrawHoorayHangedMan((int X, int Y) position)
+        {
+            Console.SetCursorPosition(position.X - 1, position.Y + 2);
+            Console.Write("\\o/");
+            Console.SetCursorPosition(position.X, position.Y + 3);
+            Console.Write("O");
+            Console.SetCursorPosition(position.X - 1, position.Y + 4);
+            Console.Write("/ \\");
+        }
+
+        public void EraseHangedMan()
+        {
+            var hangedManHeight = 3;
+            for (int i = 0; i < hangedManHeight; i++)
+            {
+                Console.SetCursorPosition(ConsoleOutputPositions.HangedMan.X - 1, ConsoleOutputPositions.HangedMan.Y + i);
+                Console.Write(new string(' ', 3));
             }
         }
     }

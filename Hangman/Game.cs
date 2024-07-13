@@ -5,6 +5,8 @@ namespace Hangman
 {
     public class Game
     {
+        private ConsoleDrawer _drawer;
+
         public int ErrorCount { get; private set; }
 
         public string Word { get; private set; }
@@ -21,14 +23,15 @@ namespace Hangman
             Word = wordPicker.GetRandomWord();
 
             HiddenWord = new string('_', Word.Length);
+
+            _drawer = new ConsoleDrawer();
         }
 
         public void Start()
         {
             Console.Clear();
 
-            var drawer = new ConsoleDrawer();
-            drawer.DrawGallow(ConsoleOutputPositions.Gallow);
+            _drawer.DrawGallow(ConsoleOutputPositions.Gallow);
 
             while (true)
             {
@@ -53,7 +56,7 @@ namespace Hangman
                 {
                     ErrorCount++;
                     WrongLetters.Add(enteredLetter);
-                    drawer.DrawHangedMan(ErrorCount, ConsoleOutputPositions.HangedMan);
+                    _drawer.DrawHangedMan(ErrorCount, ConsoleOutputPositions.HangedMan);
                 }
 
                 ClearConsoleAfterUserInput(ConsoleOutputPositions.UserInteractionBlock, cursorPositionAfterInput);
@@ -72,16 +75,8 @@ namespace Hangman
             }
             else if (HiddenWord == Word)
             {
-                Console.SetCursorPosition(ConsoleOutputPositions.Gallow.X, ConsoleOutputPositions.Gallow.Y);
-                Console.WriteLine(@"
-------------
-|/         |
-|
-|
-|         \o/
-|          O
-|         / \
--------");
+                _drawer.EraseHangedMan();
+                _drawer.DrawHoorayHangedMan(ConsoleOutputPositions.HangedMan);
 
                 Console.SetCursorPosition(ConsoleOutputPositions.UserInteractionBlock.X, ConsoleOutputPositions.UserInteractionBlock.Y);
                 Console.WriteLine("You win!\n");
