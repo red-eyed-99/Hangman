@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Hangman
@@ -68,8 +69,10 @@ namespace Hangman
             if (ErrorCount == 6)
             {
                 Console.SetCursorPosition(ConsoleOutputPositions.UserInteractionBlock.X, ConsoleOutputPositions.UserInteractionBlock.Y);
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("You hanged!");
                 Console.WriteLine($"The word was: {Word}\n");
+                Console.ResetColor();
 
                 return GameStatus.Hanged;
             }
@@ -79,7 +82,9 @@ namespace Hangman
                 _drawer.DrawHoorayHangedMan(ConsoleOutputPositions.HangedMan);
 
                 Console.SetCursorPosition(ConsoleOutputPositions.UserInteractionBlock.X, ConsoleOutputPositions.UserInteractionBlock.Y);
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("You win!\n");
+                Console.ResetColor();
 
                 return GameStatus.Win;
             }
@@ -97,6 +102,7 @@ namespace Hangman
         private void OutputHiddenWordState((int X, int Y) position)
         {
             Console.SetCursorPosition(position.X, position.Y);
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
 
             var hiddenWordSymbols = HiddenWord.ToCharArray();
             foreach (var symbol in hiddenWordSymbols)
@@ -104,6 +110,7 @@ namespace Hangman
                 Console.Write(symbol.ToString() + ' ');
             }
 
+            Console.ResetColor();
             Console.WriteLine('\n');
         }
 
@@ -127,7 +134,10 @@ namespace Hangman
             {
                 if (EnteredLetters.Contains(Convert.ToChar(userInput)))
                 {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("You have already entered this letter!");
+                    Console.ResetColor();
+
                     return false;
                 }
 
@@ -135,7 +145,10 @@ namespace Hangman
             }
             else
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("You can only enter one character in (а-яёА-ЯЁ)!");
+                Console.ResetColor();
+
                 return false;
             }
         }

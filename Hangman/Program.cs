@@ -20,7 +20,9 @@
                         }
                         catch (Exception ex)
                         {
+                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine(ex.Message);
+                            Console.ResetColor();
                         }
                         finally
                         {
@@ -31,7 +33,9 @@
                         Environment.Exit(0);
                         break;
                     default:
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Enter \"1\" to start new game or \"2\" to exit");
+                        Console.ResetColor();
                         break;
                 }
             }
