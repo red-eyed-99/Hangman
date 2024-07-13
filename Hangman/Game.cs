@@ -146,7 +146,7 @@ namespace Hangman
             else
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("You can only enter one character in (а-яёА-ЯЁ)!");
+                Console.WriteLine("You can only enter one character in (а-яА-Я)!");
                 Console.ResetColor();
 
                 return false;
