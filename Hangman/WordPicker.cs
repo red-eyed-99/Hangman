@@ -13,7 +13,7 @@
 
         private void GetWordsFromFile()
         {
-            StreamReader reader = new StreamReader("../../../words/words.txt");
+            StreamReader reader = new StreamReader("words/words.txt");
 
             using (reader)
             {

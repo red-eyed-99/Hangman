@@ -1,9 +1,13 @@
-﻿namespace Hangman
+﻿using System.Text;
+
+namespace Hangman
 {
     public class Program
     {
         static void Main(string[] args)
         {
+            Console.InputEncoding = Encoding.Unicode;
+
             Console.WriteLine("Welcome to H_A_N_G_M_A_N");
             Console.WriteLine();
             Console.WriteLine("1. Start new game 2. Exit");
